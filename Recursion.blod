@@ -1,0 +1,26 @@
+module Recursion
+
+%access public export
+
+interface Base t (f: Type -> Type) where
+
+interface (Functor f, Base t f) => Recursive (f : Type -> Type) (t : Type) where
+    project : t -> f t
+
+cata : (Recursive f t, Base a f) => (f a -> a) -> t -> a
+cata f = c where
+  c x = f . map c . project $ x
+
+data ListF : Type -> Type -> Type where
+  Nil : ListF _ _
+  Cons : a -> b -> ListF a b
+
+implementation Functor (ListF a) where
+  map _ Nil        = Nil
+  map f (Cons a b) = Cons a (f b)
+
+implementation Base b (ListF a) where
+
+implementation Recursive (ListF a) (List a) where
+  project [] = NilF
+  project (x::xs) = Cons x xs
