@@ -48,3 +48,8 @@ implementation Recursive (ListF a) (List a) where
 implementation Corecursive (ListF a) (List a) where
   embed NilF = []
   embed (Cons x xs) = x::xs
+
+sum : Num a => List a -> a
+sum = cata a where
+  a Nil        = 0
+  a (Cons x y) = x + y
